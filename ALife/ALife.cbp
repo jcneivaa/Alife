@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="../../Allegro/lib/liballegro-5.0.10-monolith-mt-debug.a" />
@@ -25,6 +26,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -37,7 +39,11 @@
 			<Add directory="../../Allegro/include" />
 			<Add directory="../../Allegro/include/allegro5" />
 		</Compiler>
+		<Unit filename="include/Fish.h" />
+		<Unit filename="include/InputManager.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Fish.cpp" />
+		<Unit filename="src/InputManager.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

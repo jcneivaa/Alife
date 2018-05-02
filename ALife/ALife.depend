@@ -231,7 +231,7 @@
 1372646332 c:\users\lumi\documents\allegro\include\allegro5\allegro_native_dialog.h
 	"allegro5/allegro.h"
 
-1521784156 source:c:\users\lumi\documents\alife\alife\main.cpp
+1525232851 source:c:\users\lumi\documents\alife\alife\main.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
@@ -240,9 +240,38 @@
 	<string>
 	<math.h>
 	<stack>
+	<vector>
+	<time.h>
+	"Fish.h"
 
 1372646332 c:\users\lumi\documents\allegro\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
 
 1362345500 c:\users\lumi\documents\allegro\include\allegro5\allegro_image.h
+
+1525232851 source:c:\users\lumi\documents\alife\alife\src\fish.cpp
+	"Fish.h"
+
+1525229249 c:\users\lumi\documents\alife\alife\include\fish.h
+	<iostream>
+	<allegro5/allegro.h>
+	<allegro5/allegro_image.h>
+	<cmath>
+	<vector>
+
+1525190604 source:c:\users\lumi\documents\alife\alife\src\entity.cpp
+	"Entity.h"
+
+1525188996 c:\users\lumi\documents\alife\alife\include\entity.h
+	<allegro5/allegro.h>
+	<vector>
+	<string>
+
+1525191975 source:c:\users\lumi\documents\alife\alife\src\inputmanager.cpp
+	"InputManager.h"
+
+1525191975 c:\users\lumi\documents\alife\alife\include\inputmanager.h
+	<allegro5/allegro.h>
+	<allegro5/keyboard.h>
+	<vector>
 

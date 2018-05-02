@@ -6,6 +6,9 @@
 #include <string>
 #include <math.h>
 #include <stack>
+#include <vector>
+#include <time.h>
+#include"Fish.h"
 
 
 
@@ -14,6 +17,10 @@ using namespace std;
 #define PI 3.14159265
 #define SWidth 1500
 #define SHeight 780
+#define FPS 20
+int boids=100;
+//Fish boid;
+vector<Fish> flock;
 
 
 struct rule {
@@ -103,25 +110,19 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
     for(int x=0;x<al_get_bitmap_width(cute);++x){
         for (int y=0;y<al_get_bitmap_height(cute);++y){
             aux=al_get_pixel(cute,x,y);
-            //al_put_pixel((x*x - y*y)/1000,(2*x*y)/1000,aux);
-            //al_put_pixel(((x*x - y*y)/1000)+250,y,aux); //Esta es la "buena"
-            //al_put_pixel(x,((x*x-y*y)/1000)+250,aux);
-            //al_put_pixel(((2*x*y)/1000),((x*x - y*y)/-1000)+250,aux);
             if (option==0){
                 al_put_pixel(x,y,aux);
+                //cout<<"Shalalalala"<<endl;
             }
             if (option==1){
-                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*sin(int(((x/(al_get_bitmap_width(cute)/-180)))%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
+                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*sin(int((int(x/(al_get_bitmap_width(cute)/-180.0)))%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
             }
             if (option==2){
-                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int(((x/(al_get_bitmap_width(cute)/90))+90)%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
+                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int((int(x/(al_get_bitmap_width(cute)/90.0))+90)%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
             }
             if (option==3){
-                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int(((x/(al_get_bitmap_width(cute)/90))+160)%360)*PI/180)+al_get_bitmap_height(cute)/2,aux);
+                al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int((int(x/(al_get_bitmap_width(cute)/90.0))+160)%360)*PI/180)+al_get_bitmap_height(cute)/2,aux);
             }
-            //al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*sin(int(((x/(al_get_bitmap_width(cute)/-180)))%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
-            //al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int(((x/(al_get_bitmap_width(cute)/90))+90)%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
-            //al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*cos(int(((x/(al_get_bitmap_width(cute)/90))+160)%360)*PI/180)+al_get_bitmap_height(cute)/2,aux);
         }
     }
 
@@ -149,7 +150,7 @@ int main()
 
     //Screen Resolution
     //display = al_create_display(1000,720);
-
+    srand(time(NULL));
     al_set_new_display_flags(ALLEGRO_WINDOWED);
     display = al_create_display(SWidth,SHeight);
     al_set_window_position(display,0,0);
@@ -170,14 +171,14 @@ int main()
     al_install_keyboard();
 
     //Configuracion del teclado y timer
-    ALLEGRO_TIMER* timer = al_create_timer(1.0/60);
+    ALLEGRO_TIMER* timer = al_create_timer(1.0/FPS);
     ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
     al_register_event_source(event_queue,al_get_keyboard_event_source());
     al_register_event_source(event_queue,al_get_timer_event_source(timer));
 
     //Inicio cosas feas
 
-    ALLEGRO_BITMAP* cute = al_load_bitmap("Pez.png");
+    ALLEGRO_BITMAP* cute = al_load_bitmap("Small_Boid.png");
     ALLEGRO_BITMAP* xfish = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
 
 
@@ -231,6 +232,20 @@ int main()
 //    al_draw_bitmap(cute,0,0,ALLEGRO_FLIP_HORIZONTAL);
 //    al_draw_bitmap(test,0,0,0);
 
+//Inicio de boids
+
+    for (int x =0; x<boids;++x){
+        int option=rand()%4;
+        xfish=transformation(cute,option);
+        al_set_target_backbuffer(display);
+        Fish boid(rand()%SWidth,rand()%SHeight,xfish,(rand()%2) - 1,(rand()%2) - 1);
+        flock.push_back(boid);
+        //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
+    }
+
+
+//Fin de Boids
+
     bool done=false, arbolito=true;
     int tree_move = 0;
     int option=0;
@@ -274,14 +289,21 @@ int main()
     }
 */
 
-    al_draw_bitmap(xfish,0,0,0);
+//    al_draw_bitmap(xfish,0,0,0);
+
+    for (int x=0;x<flock.size();++x){
+        flock[x].Draw(display);
+        flock[x].Behavior(flock);
+    }
+
 /*
     for (int x=0;x<5;++x){
         draw_tree(arbolitos[x],(x+1)*250,SHeight);
     }
 */
     //draw_tree(treee,200,SHeight);
-    draw_tree(treec,500,SHeight);
+    //draw_tree(treec,500,SHeight);
+    //cout<<flock.size()<<endl;
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));
 
