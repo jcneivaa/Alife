@@ -8,7 +8,7 @@ Fish::Fish(float x, float y, ALLEGRO_BITMAP* image,float speedx,float speedy)
    this->image = image;
    this->speed.first=speedx;
    this->speed.second=speedy;
-   this->vision = 100;
+   this->vision = 85;
    this->acceleration.first =0;
    this->acceleration.second =0;
 }
@@ -87,8 +87,8 @@ void Fish::Behavior(std::vector<Fish> flock)
 
         //acceleration.first += alignment.first + cohesion.first *3 + separation.first;
         //acceleration.second += alignment.second + cohesion.second*3 + separation.second;
-        speed.first += alignment.first + cohesion.first *3 + separation.first;
-        speed.second += alignment.second + cohesion.second*3 + separation.second;
+        speed.first += alignment.first + cohesion.first *2 + separation.first;
+        speed.second += alignment.second + cohesion.second*2 + separation.second;
     }
 
 }

@@ -40,10 +40,8 @@
 			<Add directory="../../Allegro/include/allegro5" />
 		</Compiler>
 		<Unit filename="include/Fish.h" />
-		<Unit filename="include/InputManager.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Fish.cpp" />
-		<Unit filename="src/InputManager.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

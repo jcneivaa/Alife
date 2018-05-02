@@ -93,6 +93,32 @@ void draw_tree(tree arbolito, float xinit, float yinit){
     }
 }
 
+int getVecindario(bool x, bool y, bool z){
+    if (x){
+        if (y){
+            if (z){
+                return 7;
+            }else{
+                return 6;
+            }
+        }else if(z){
+            return 5;
+        }else{
+            return 4;
+        }
+    }else if(y){
+        if (z){
+            return 3;
+        }else{
+            return 2;
+        }
+    }else if (z){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+
 ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
 
     ALLEGRO_BITMAP* test = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
@@ -104,15 +130,15 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
     al_set_target_bitmap(test);
 
     ALLEGRO_COLOR aux;
-
     //cout<<option;
 
     for(int x=0;x<al_get_bitmap_width(cute);++x){
         for (int y=0;y<al_get_bitmap_height(cute);++y){
             aux=al_get_pixel(cute,x,y);
+            //cout<<aux.a<<endl;
+
             if (option==0){
                 al_put_pixel(x,y,aux);
-                //cout<<"Shalalalala"<<endl;
             }
             if (option==1){
                 al_put_pixel(x,((al_get_bitmap_height(cute)/2)-y)*sin(int((int(x/(al_get_bitmap_width(cute)/-180.0)))%180)*PI/180)+al_get_bitmap_height(cute)/2,aux);
@@ -134,6 +160,79 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
     //al_save_bitmap("shalalala.png",test);
 
     //al_set_target_backbuffer(display);
+}
+
+ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule){
+    ALLEGRO_BITMAP* test = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
+
+
+    ALLEGRO_LOCKED_REGION* lc = al_lock_bitmap(cute,ALLEGRO_PIXEL_FORMAT_ANY,ALLEGRO_LOCK_READONLY);
+    ALLEGRO_LOCKED_REGION* lt = al_lock_bitmap(test,ALLEGRO_PIXEL_FORMAT_ANY,ALLEGRO_LOCK_WRITEONLY);
+
+    al_set_target_bitmap(test);
+
+    ALLEGRO_COLOR aux;
+    ALLEGRO_COLOR azul= al_map_rgb(0,128,175);
+    ALLEGRO_COLOR morado = al_map_rgb(129,84,202);
+
+    //Inicio TuringMorph
+    vector<bool> state,nextState;
+    bool rules[8];
+    for (int x=0; x<8;++x){
+        rules[x]=false;
+    }
+
+    int lumi=0;
+    while (morphingRule>0){
+        if(morphingRule & 1){
+          rules[lumi]= true;
+        }
+    lumi++;
+    morphingRule = morphingRule>>1;
+    }
+
+    for (int x=0;x<al_get_bitmap_height(cute);++x){
+        if (rand()%2 ==0){
+            state.push_back(false);
+        }else{
+            state.push_back(true);
+        }
+    }
+
+    for (int x=0; x<al_get_bitmap_width(cute);++x){
+        for (int y=0;y<state.size();++y){
+            aux=al_get_pixel(cute,x,y);
+            int vecindario = getVecindario(state[(y+state.size()-1)%state.size()],state[(y+state.size())%state.size()],state[(y+state.size()+1)%state.size()]);
+            if (rules[vecindario]){
+                nextState.push_back(true);
+                if (aux.a!=0){
+                    al_put_pixel(x,y,azul);
+                }else{
+                    al_put_pixel(x,y,aux);
+                }
+            }else{
+                nextState.push_back(false);
+                if (aux.a!=0){
+                    al_put_pixel(x,y,morado);
+                }else{
+                    al_put_pixel(x,y,aux);
+                }
+            }
+        }
+        state = nextState;
+        nextState.clear();
+    }
+
+    //Fin TuringMorph
+
+
+
+
+    al_unlock_bitmap(test);
+    al_unlock_bitmap(cute);
+
+    return test;
+
 }
 
 int main()
@@ -179,10 +278,15 @@ int main()
     //Inicio cosas feas
 
     ALLEGRO_BITMAP* cute = al_load_bitmap("Small_Boid.png");
+    ALLEGRO_BITMAP* bigFish = al_load_bitmap("Pez.png");
     ALLEGRO_BITMAP* xfish = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
+    ALLEGRO_BITMAP* testFish = al_create_bitmap(al_get_bitmap_width(bigFish),al_get_bitmap_height(bigFish));
 
+    cute = turingMorph(cute,122);
+    al_set_target_backbuffer(display);
 
-
+    bigFish = turingMorph(bigFish,122);
+    al_set_target_backbuffer(display);
 
     //Fin Cosas feas
 
@@ -246,10 +350,13 @@ int main()
 
 //Fin de Boids
 
-    bool done=false, arbolito=true;
+    bool done=false, arbolito=true, theBig=false;;
     int tree_move = 0;
     int option=0;
+    testFish=transformation(bigFish,option);
+    al_set_target_backbuffer(display);
     al_start_timer(timer);
+
 
     while(!done){
         ALLEGRO_EVENT events;
@@ -258,8 +365,15 @@ int main()
 
         if (events.type==ALLEGRO_EVENT_KEY_DOWN){
             switch(events.keyboard.keycode){
+                case ALLEGRO_KEY_ENTER:
+                    if(theBig){
+                        theBig=false;
+                    }else{
+                        theBig=true;
+                    }
+                    break;
                 case ALLEGRO_KEY_SPACE:
-                    xfish=transformation(cute,option);
+                    testFish=transformation(bigFish,option);
                     ++option;
                     if (option==4){
                             option=0;
@@ -288,8 +402,9 @@ int main()
         }
     }
 */
-
-//    al_draw_bitmap(xfish,0,0,0);
+    if (theBig){
+        al_draw_bitmap(testFish,0,0,0);
+    }
 
     for (int x=0;x<flock.size();++x){
         flock[x].Draw(display);
