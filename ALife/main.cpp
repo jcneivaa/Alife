@@ -340,9 +340,11 @@ int main()
 
     for (int x =0; x<boids;++x){
         int option=rand()%4;
+        //int vel = rand()%2;
+        //int vel2 = rand()%2;
         xfish=transformation(cute,option);
         al_set_target_backbuffer(display);
-        Fish boid(rand()%SWidth,rand()%SHeight,xfish,(rand()%2) - 1,(rand()%2) - 1);
+        Fish boid(rand()%SWidth - 100,rand()%SHeight - 100,xfish,-1,-1);
         flock.push_back(boid);
         //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
@@ -416,8 +418,8 @@ int main()
         draw_tree(arbolitos[x],(x+1)*250,SHeight);
     }
 */
-    //draw_tree(treee,200,SHeight);
-    //draw_tree(treec,500,SHeight);
+    draw_tree(treee,200,SHeight);
+    draw_tree(treec,500,SHeight);
     //cout<<flock.size()<<endl;
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));

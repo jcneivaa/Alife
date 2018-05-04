@@ -22,6 +22,7 @@ void Fish::Draw(ALLEGRO_DISPLAY *display)
 {
     Fish::Move();
     al_draw_bitmap(image,position.first,position.second,0);
+    std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
 }
 
 void Fish::Behavior(std::vector<Fish> flock)
@@ -97,14 +98,18 @@ void Fish::Move()
 {
 
     Fish::SpeedLimit();
-    if (position.first + speed.first < 0){
-        position.first =1490;
+    position.first = int((position.first + speed.first))%1460;
+    position.second = int((position.second + speed.second))%770;
+    if (position.first < 0){
+        position.first =1450;
+    }else if (position.first > 1450){
+        position.first=0;
     }
-    if (position.second + speed.second < 0){
-        position.second = 770;
+    if (position.second < 0){
+        position.second = 760;
+    }else if(position.second>760){
+        position.second=0;
     }
-    position.first = int((position.first + speed.first))%1500;
-    position.second = int((position.second + speed.second))%780;
 }
 
 void Fish::SpeedLimit()
@@ -115,7 +120,12 @@ void Fish::SpeedLimit()
     speed.second/=aux;
     speed.first*=4;
     speed.second*=4;
-
+    if (std::isnan(speed.first)){
+        speed.first  = -1;
+    }
+    if (std::isnan(speed.second)){
+        speed.second = -1;
+    }
 }
 
 std::pair <float,float> Fish::SteerForceLimit(std::pair <float,float> valor)
