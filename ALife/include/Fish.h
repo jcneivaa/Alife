@@ -5,11 +5,12 @@
 #include <allegro5/allegro_image.h>
 #include <cmath>
 #include <vector>
+#include"Predator.h"
 
 class Fish
 {
     private:
-        std::pair <float, float> position, speed,acceleration;
+        std::pair <float, float> position, speed;
         ALLEGRO_BITMAP* image;
         int vision;
         void SpeedLimit();
@@ -22,7 +23,7 @@ class Fish
         ~Fish();
 
         void Draw(ALLEGRO_DISPLAY* display, int comida[1500][780]);
-        void Behavior(std::vector <Fish> flock, int comida[1500][780]);
+        void Behavior(std::vector <Fish> flock, int comida[1500][780], std::vector<std::pair <float,float>> predators);
         std::pair <float,float> getPosition();
 
 };

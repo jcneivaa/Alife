@@ -9,8 +9,6 @@ Fish::Fish(float x, float y, ALLEGRO_BITMAP* image,float speedx,float speedy)
    this->speed.first=speedx;
    this->speed.second=speedy;
    this->vision = 85;
-   this->acceleration.first =0;
-   this->acceleration.second =0;
 }
 
 Fish::~Fish()
@@ -28,16 +26,18 @@ void Fish::Draw(ALLEGRO_DISPLAY *display, int comida[1500][780])
     //std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
 }
 
-void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780])
+void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780], std::vector<std::pair <float,float>> predators)
 {
 
     int boidCount = 0;
     int foodCount =0;
+    int predatorCount =0;
 
     std::pair <float,float> alignment (0,0);
     std::pair <float,float> cohesion (0,0);
     std::pair <float,float> separation (0,0);
     std::pair <float,float> food (0,0);
+    std::pair <float,float> survive(0,0);
     std::pair <float,float> repulse;
 
     for (int x=vision/2; x>-vision/2; --x){
@@ -55,13 +55,9 @@ void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780])
         food.second/=foodCount;
         food.first-=position.first;
         food.second-=position.second;
-        //float aux;
-        //aux = sqrt(food.first*food.first + food.second*food.second);
-        //food.first /=aux;
-        //food.second/=aux;
         food.first*=0.1;
         food.second*=0.1;
-        //std::cout<<food.first/foodCount<<"  "<<food.second/foodCount<<std::endl;
+
         speed.first += (food.first);
         speed.second+= (food.second);
     }
@@ -94,6 +90,35 @@ void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780])
 
 
         }
+    }
+
+     for (int i=0;i<predators.size();++i){
+        float dist;
+
+        float dx = predators[i].first - position.first;
+        float dy = predators[i].second - position.second;
+
+        dist = std::sqrt(dx*dx + dy*dy);
+
+        if (dist>0 && dist<=vision){
+
+            survive.first += predators[i].first;
+            survive.second += predators[i].second;
+            predatorCount++;
+
+        }
+    }
+
+    if (predatorCount>0){
+        survive.first/=predatorCount;
+        survive.second/=predatorCount;
+        survive.first-=position.first;
+        survive.second-=position.second;
+        survive.first*=0.1;
+        survive.second*=0.1;
+
+        speed.first -= (survive.first);
+        speed.second-= (survive.second);
     }
 
     if(boidCount >0){

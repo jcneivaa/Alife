@@ -9,6 +9,7 @@
 #include <vector>
 #include <time.h>
 #include"Fish.h"
+#include"Predator.h"
 
 
 
@@ -20,9 +21,10 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100;
+int boids=100, predators =2;
 //Fish boid;
 vector<Fish> flock;
+vector<Predator> dragons;
 
 
 struct rule {
@@ -125,10 +127,10 @@ void sandPile(int x, int y){
     comida[x][y]++;
     if (comida[x][y]>=4){
         comida[x][y]-=4;
-        sandPile((x+SWidth+5)%SWidth,y);
-        sandPile((x+SWidth-5)%SWidth,y);
-        sandPile((x)%SWidth,(y+SHeight+5)%SHeight);
-        sandPile((x)%SWidth,(y+SHeight-5)%SHeight);
+        sandPile((x+SWidth+10)%SWidth,y);
+        sandPile((x+SWidth-10)%SWidth,y);
+        sandPile((x)%SWidth,(y+SHeight+10)%SHeight);
+        sandPile((x)%SWidth,(y+SHeight-10)%SHeight);
     }
 
 }
@@ -293,8 +295,10 @@ int main()
     //Inicio cosas feas
 
     ALLEGRO_BITMAP* cute = al_load_bitmap("Boid.png");
+    ALLEGRO_BITMAP* depredador = al_load_bitmap("Predator.png");
     ALLEGRO_BITMAP* bigFish = al_load_bitmap("Pez.png");
     ALLEGRO_BITMAP* xfish = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
+    ALLEGRO_BITMAP* xpredator = al_create_bitmap(al_get_bitmap_width(depredador),al_get_bitmap_height(depredador));
     ALLEGRO_BITMAP* testFish = al_create_bitmap(al_get_bitmap_width(bigFish),al_get_bitmap_height(bigFish));
 
     cute = turingMorph(cute,122);
@@ -367,6 +371,21 @@ int main()
 
 //Fin de Boids
 
+//Inicio de Predator
+    for (int x =0; x<predators;++x){
+        int option=rand()%4;
+        //int vel = rand()%2;
+        //int vel2 = rand()%2;
+        xpredator=transformation(depredador,option);
+        al_set_target_backbuffer(display);
+        Predator dragon(rand()%SWidth - 100,rand()%SHeight - 100,xpredator,(rand()%2)-1,(rand()%2)-1);
+        dragons.push_back(dragon);
+        //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
+    }
+
+
+//Fin de Predator
+
 //Inicio de comida
     for (int x=0; x<SWidth; ++x){
         for (int y = 0; y< SHeight; ++y){
@@ -374,7 +393,7 @@ int main()
         }
     }
 
-    for (int x=0; x<1000; ++x){
+    for (int x=0; x<400; ++x){
         sandPile(500,500);
     }
 //Fin de comida
@@ -382,6 +401,7 @@ int main()
     bool done=false, arbolito=true, theBig=false;;
     int tree_move = 0;
     int option=0;
+    vector <pair <float,float>> flockPosition, predatorPosition ;
     //std::pair <float,float> posAux;
     testFish=transformation(bigFish,option);
     al_set_target_backbuffer(display);
@@ -448,13 +468,23 @@ int main()
     }
 
     for (int x=0;x<flock.size();++x){
-        flock[x].Behavior(flock, comida);
+        flock[x].Behavior(flock, comida, predatorPosition);
         flock[x].Draw(display, comida);
-
+        flockPosition.push_back(flock[x].getPosition());
         //if (comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]>0){
         //    comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]--;
         //}
     }
+
+    predatorPosition.clear();
+
+    for (int x=0;x<dragons.size();++x){
+        dragons[x].Draw(display);
+        dragons[x].Behavior(flockPosition);
+        predatorPosition.push_back(dragons[x].getPosition());
+    }
+
+    flockPosition.clear();
 
 /*
     for (int x=0;x<5;++x){
