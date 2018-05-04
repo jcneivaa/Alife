@@ -18,6 +18,8 @@ using namespace std;
 #define SWidth 1500
 #define SHeight 780
 #define FPS 20
+
+int comida[SWidth][SHeight];
 int boids=100;
 //Fish boid;
 vector<Fish> flock;
@@ -117,6 +119,18 @@ int getVecindario(bool x, bool y, bool z){
     }else{
         return 0;
     }
+}
+
+void sandPile(int x, int y){
+    comida[x][y]++;
+    if (comida[x][y]>=4){
+        comida[x][y]-=4;
+        sandPile((x+SWidth+5)%SWidth,y);
+        sandPile((x+SWidth-5)%SWidth,y);
+        sandPile((x)%SWidth,(y+SHeight+5)%SHeight);
+        sandPile((x)%SWidth,(y+SHeight-5)%SHeight);
+    }
+
 }
 
 ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
@@ -235,6 +249,7 @@ ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule){
 
 }
 
+
 int main()
 {
     //This command create a screen
@@ -277,7 +292,7 @@ int main()
 
     //Inicio cosas feas
 
-    ALLEGRO_BITMAP* cute = al_load_bitmap("Small_Boid.png");
+    ALLEGRO_BITMAP* cute = al_load_bitmap("Boid.png");
     ALLEGRO_BITMAP* bigFish = al_load_bitmap("Pez.png");
     ALLEGRO_BITMAP* xfish = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
     ALLEGRO_BITMAP* testFish = al_create_bitmap(al_get_bitmap_width(bigFish),al_get_bitmap_height(bigFish));
@@ -291,7 +306,7 @@ int main()
     //Fin Cosas feas
 
     ALLEGRO_COLOR eblue = al_map_rgb(44,117,255);
-    ALLEGRO_COLOR blue = al_map_rgb(0,255,0);
+    ALLEGRO_COLOR white = al_map_rgb(255,255,255);
 
     //  Inicio L-Systems
 
@@ -344,7 +359,7 @@ int main()
         //int vel2 = rand()%2;
         xfish=transformation(cute,option);
         al_set_target_backbuffer(display);
-        Fish boid(rand()%SWidth - 100,rand()%SHeight - 100,xfish,-1,-1);
+        Fish boid(rand()%SWidth - 100,rand()%SHeight - 100,xfish,(rand()%2)-1,(rand()%2)-1);
         flock.push_back(boid);
         //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
@@ -352,9 +367,22 @@ int main()
 
 //Fin de Boids
 
+//Inicio de comida
+    for (int x=0; x<SWidth; ++x){
+        for (int y = 0; y< SHeight; ++y){
+            comida[x][y]= 0;
+        }
+    }
+
+    for (int x=0; x<1000; ++x){
+        sandPile(500,500);
+    }
+//Fin de comida
+
     bool done=false, arbolito=true, theBig=false;;
     int tree_move = 0;
     int option=0;
+    //std::pair <float,float> posAux;
     testFish=transformation(bigFish,option);
     al_set_target_backbuffer(display);
     al_start_timer(timer);
@@ -404,13 +432,28 @@ int main()
         }
     }
 */
+
+    for (int x=0; x<SWidth;++x){
+        for (int y=0; y<SHeight;++y){
+            if (comida[x][y]>0){
+                al_draw_pixel(x,y,white);
+            }
+        }
+    }
+
+
+
     if (theBig){
         al_draw_bitmap(testFish,0,0,0);
     }
 
     for (int x=0;x<flock.size();++x){
-        flock[x].Draw(display);
-        flock[x].Behavior(flock);
+        flock[x].Behavior(flock, comida);
+        flock[x].Draw(display, comida);
+
+        //if (comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]>0){
+        //    comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]--;
+        //}
     }
 
 /*
@@ -418,8 +461,8 @@ int main()
         draw_tree(arbolitos[x],(x+1)*250,SHeight);
     }
 */
-    draw_tree(treee,200,SHeight);
-    draw_tree(treec,500,SHeight);
+    //draw_tree(treee,200,SHeight);
+    //draw_tree(treec,500,SHeight);
     //cout<<flock.size()<<endl;
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));

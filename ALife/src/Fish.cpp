@@ -18,23 +18,53 @@ Fish::~Fish()
     //dtor
 }
 
-void Fish::Draw(ALLEGRO_DISPLAY *display)
+void Fish::Draw(ALLEGRO_DISPLAY *display, int comida[1500][780])
 {
     Fish::Move();
     al_draw_bitmap(image,position.first,position.second,0);
-    std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
+    if(comida[int(position.first)][int(position.second)]>0){
+        comida[int(position.first)][int(position.second)]=0;
+    }
+    //std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
 }
 
-void Fish::Behavior(std::vector<Fish> flock)
+void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780])
 {
 
     int boidCount = 0;
+    int foodCount =0;
 
     std::pair <float,float> alignment (0,0);
     std::pair <float,float> cohesion (0,0);
     std::pair <float,float> separation (0,0);
+    std::pair <float,float> food (0,0);
     std::pair <float,float> repulse;
 
+    for (int x=vision/2; x>-vision/2; --x){
+        for (int y=vision/2; y>-vision/2;--y){
+            if (comida[int((position.first+x+1500))%1500][int((position.second+y+780))%780]>0){
+                food.first+=position.first+x;
+                food.second+=position.second+y;
+                foodCount++;
+            }
+        }
+    }
+
+    if (foodCount>0){
+        food.first/=foodCount;
+        food.second/=foodCount;
+        food.first-=position.first;
+        food.second-=position.second;
+        //float aux;
+        //aux = sqrt(food.first*food.first + food.second*food.second);
+        //food.first /=aux;
+        //food.second/=aux;
+        food.first*=0.1;
+        food.second*=0.1;
+        //std::cout<<food.first/foodCount<<"  "<<food.second/foodCount<<std::endl;
+        speed.first += (food.first);
+        speed.second+= (food.second);
+    }
 
     for (int i=0;i<flock.size();++i){
         float dist;
@@ -59,8 +89,8 @@ void Fish::Behavior(std::vector<Fish> flock)
             repulse.first /=dist;
             repulse.second/=dist;
 
-            separation.first += repulse.first;
-            separation.second += repulse.second;
+            separation.first -= repulse.first;
+            separation.second -= repulse.second;
 
 
         }
@@ -88,8 +118,8 @@ void Fish::Behavior(std::vector<Fish> flock)
 
         //acceleration.first += alignment.first + cohesion.first *3 + separation.first;
         //acceleration.second += alignment.second + cohesion.second*3 + separation.second;
-        speed.first += alignment.first + cohesion.first *2 + separation.first;
-        speed.second += alignment.second + cohesion.second*2 + separation.second;
+        speed.first += alignment.first + cohesion.first *3 + separation.first;
+        speed.second += alignment.second + cohesion.second*3 + separation.second;
     }
 
 }
@@ -98,18 +128,8 @@ void Fish::Move()
 {
 
     Fish::SpeedLimit();
-    position.first = int((position.first + speed.first))%1460;
-    position.second = int((position.second + speed.second))%770;
-    if (position.first < 0){
-        position.first =1450;
-    }else if (position.first > 1450){
-        position.first=0;
-    }
-    if (position.second < 0){
-        position.second = 760;
-    }else if(position.second>760){
-        position.second=0;
-    }
+    position.first = int((position.first + speed.first + 1500))%1500;
+    position.second = int((position.second + speed.second + 780))%780;
 }
 
 void Fish::SpeedLimit()
@@ -144,3 +164,7 @@ std::pair <float,float> Fish::SteerForceLimit(std::pair <float,float> valor)
     return valor;
 }
 
+std::pair<float,float> Fish::getPosition()
+{
+    return position;
+}

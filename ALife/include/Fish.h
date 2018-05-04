@@ -21,8 +21,9 @@ class Fish
         Fish(float x, float y,ALLEGRO_BITMAP* image, float speedx,float speedy);
         ~Fish();
 
-        void Draw(ALLEGRO_DISPLAY* display);
-        void Behavior(std::vector <Fish> flock);
+        void Draw(ALLEGRO_DISPLAY* display, int comida[1500][780]);
+        void Behavior(std::vector <Fish> flock, int comida[1500][780]);
+        std::pair <float,float> getPosition();
 
 };
 
