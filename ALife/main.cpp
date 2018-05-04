@@ -401,6 +401,7 @@ int main()
     bool done=false, arbolito=true, theBig=false;;
     int tree_move = 0;
     int option=0;
+    int destroyFish =-1;
     vector <pair <float,float>> flockPosition, predatorPosition ;
     //std::pair <float,float> posAux;
     testFish=transformation(bigFish,option);
@@ -481,7 +482,11 @@ int main()
     for (int x=0;x<dragons.size();++x){
         dragons[x].Draw(display);
         dragons[x].Behavior(flockPosition);
+        destroyFish = dragons[x].Eat(flockPosition);
         predatorPosition.push_back(dragons[x].getPosition());
+        if (destroyFish>=0){
+            flock.erase(flock.begin()+destroyFish);
+        }
     }
 
     flockPosition.clear();
@@ -493,7 +498,7 @@ int main()
 */
     //draw_tree(treee,200,SHeight);
     //draw_tree(treec,500,SHeight);
-    //cout<<flock.size()<<endl;
+    cout<<flock.size()<<endl;
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));
 

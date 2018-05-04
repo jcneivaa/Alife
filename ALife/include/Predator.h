@@ -22,5 +22,6 @@ class Predator
 
         void Draw(ALLEGRO_DISPLAY* display);
         void Behavior(std::vector <std::pair<float,float>> flock);
+        int Eat(std::vector <std::pair<float,float>> flock);
         std::pair <float,float> getPosition();
 };

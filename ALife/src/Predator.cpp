@@ -39,7 +39,6 @@ void Predator::Behavior(std::vector <std::pair<float,float>> flock)
 
             boids.first += flock[i].first;
             boids.second += flock[i].second;
-            //std::cout <<boids.first<<std::endl;
             boidCount++;
 
         }
@@ -76,12 +75,42 @@ void Predator::SpeedLimit()
     speed.second/=aux;
     speed.first*=4;
     speed.second*=4;
+    if (speed.first <0){
+        speed.first-=1;
+    }else{
+        speed.first+=1;
+    }
+    if (speed.second<0){
+        speed.second-=1;
+    }else{
+        speed.second+=1;
+    }
+
     if (std::isnan(speed.first)){
         speed.first  = -1;
     }
     if (std::isnan(speed.second)){
         speed.second = -1;
     }
+}
+
+int Predator::Eat(std::vector <std::pair<float,float>> flock)
+{
+    for (int x=0; x<flock.size();++x){
+        float dist;
+
+        float dx = flock[x].first - position.first;
+        float dy = flock[x].second - position.second;
+
+        dist = std::sqrt(dx*dx + dy*dy);
+
+        if (dist>0 && dist<=20){
+
+            return x;
+
+        }
+    }
+    return -1;
 }
 
 std::pair<float,float> Predator::getPosition()
