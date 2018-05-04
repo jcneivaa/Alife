@@ -21,10 +21,11 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100, predators =2;
+int boids=100, predators =2, sourceFood =2, foodRate=200;
 //Fish boid;
 vector<Fish> flock;
 vector<Predator> dragons;
+vector<pair<int,int>> arboles;
 
 
 struct rule {
@@ -387,14 +388,24 @@ int main()
 //Fin de Predator
 
 //Inicio de comida
+    for (int x=0; x<sourceFood;++x){
+        //int aux=rand()%SWidth, aux2=rand()%s
+        pair <int,int> aux;
+        aux.first=rand()%SWidth;
+        aux.second=rand()%SHeight;
+        arboles.push_back(aux);
+    }
+
     for (int x=0; x<SWidth; ++x){
         for (int y = 0; y< SHeight; ++y){
             comida[x][y]= 0;
         }
     }
 
-    for (int x=0; x<400; ++x){
-        sandPile(500,500);
+    for (int i=0; i<sourceFood;++i){
+        for (int x=0; x<400; ++x){
+            sandPile(arboles[i].first,arboles[i].second);
+        }
     }
 //Fin de comida
 
@@ -402,6 +413,7 @@ int main()
     int tree_move = 0;
     int option=0;
     int destroyFish =-1;
+    int sandCount=0;
     vector <pair <float,float>> flockPosition, predatorPosition ;
     //std::pair <float,float> posAux;
     testFish=transformation(bigFish,option);
@@ -453,7 +465,7 @@ int main()
         }
     }
 */
-
+//Dibujar Comida
     for (int x=0; x<SWidth;++x){
         for (int y=0; y<SHeight;++y){
             if (comida[x][y]>0){
@@ -462,8 +474,19 @@ int main()
         }
     }
 
-
-
+//Dibujar Arboles
+    for (int x=0; x<sourceFood;++x){
+        draw_tree(arbolitos[(x%5)],arboles[x].first,arboles[x].second);
+        if (sandCount==foodRate){
+        sandPile(arboles[x].first,arboles[x].second);
+        }
+    }
+    if (sandCount==foodRate){
+        sandCount=0;
+    }else{
+        sandCount++;
+    }
+//Dibujar Peces
     if (theBig){
         al_draw_bitmap(testFish,0,0,0);
     }
@@ -478,7 +501,7 @@ int main()
     }
 
     predatorPosition.clear();
-
+//Dibujar Presas
     for (int x=0;x<dragons.size();++x){
         dragons[x].Draw(display);
         dragons[x].Behavior(flockPosition);
