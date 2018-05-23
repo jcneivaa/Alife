@@ -91,7 +91,7 @@ void Fish::Draw(ALLEGRO_DISPLAY *display, int comida[1500][780])
     }
     if (reserva<=0){
         hambre++;
-    }else if(hambre>0){
+    }else{
         reserva--;
         hambre-=metabolismo*4;
     }

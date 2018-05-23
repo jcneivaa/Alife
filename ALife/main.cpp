@@ -21,7 +21,7 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100, predators =4, sourceFood =2, foodRate=200, season =1000;
+int boids=100, predators =4, sourceFood =2, foodRate=200, season =800;
 int dnaSize =89;
 //0-23 Color 1, 24-47 Color 2, 48-55 Turing Morph Rule, 56-57 Transformacion, 58-63 Vida Maxima, 64-69 Vision, 70-77 Libido
 //78-79 Velocidad, 80-86 Resistencia, 87-88 Metabolismo
@@ -177,10 +177,10 @@ void createArboles(){
     for (int x=0; x<sourceFood*2;++x){
         //int aux=rand()%SWidth, aux2=rand()%s
         pair <int,int> aux;
-        aux.first=rand()%SWidth/2;
+        aux.first=rand()%SWidth/4;
         aux.second=rand()%SHeight;
         if (x>=sourceFood){
-            aux.first+=SWidth/2;
+            aux.first+=(SWidth/4)*3;
         }
         arboles.push_back(aux);
     }
@@ -625,6 +625,17 @@ int main()
         }
     }
 
+    for (int x=0; x<dragons.size();++x){
+        if (dragons[x].getMarry()){
+            createPredator(depredador,xpredator,display,dragons[x].getFiglio(),dragons[x].getPosition());
+            dragons[x].divorce();
+        }
+        if (dragons[x].getVida()<=0){
+            dragons.erase(dragons.begin()+x);
+            x--;
+        }
+    }
+
 /*
     for (int x=0;x<5;++x){
         draw_tree(arbolitos[x],(x+1)*250,SHeight);
@@ -632,7 +643,7 @@ int main()
 */
     //draw_tree(treee,200,SHeight);
     //draw_tree(treec,500,SHeight);
-    cout<<flock.size()<<"   "<<seasonTime<<endl;
+    cout<<flock.size()<<"   "<<dragons.size()<<"    "<<seasonTime<<endl;
 
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));

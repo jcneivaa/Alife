@@ -31,6 +31,7 @@ class Predator
         int metabolismo;
         int getNumber(std::vector <bool> dna);
         bool marry;
+        bool sleeping;
 
 
     public:
@@ -50,5 +51,5 @@ class Predator
         void setImage(ALLEGRO_BITMAP* image);
         std::vector <bool> getDNA();
         std::vector <bool> getFiglio();
-        std::vector <bool> reproducir(std::vector<bool> adn);
+        std::vector <bool> reproducir();
 };
