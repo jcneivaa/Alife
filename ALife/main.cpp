@@ -22,9 +22,9 @@ using namespace std;
 
 int comida[SWidth][SHeight];
 int boids=100, predators =0, sourceFood =2, foodRate=200, season =1000;
-int dnaSize =80;
+int dnaSize =89;
 //0-23 Color 1, 24-47 Color 2, 48-55 Turing Morph Rule, 56-57 Transformacion, 58-63 Vida Maxima, 64-69 Vision, 70-77 Libido
-//78-79 Velocidad
+//78-79 Velocidad, 80-86 Resistencia, 87-88 Metabolismo
 //Fish boid;
 vector<Fish> flock;
 vector<Predator> dragons;

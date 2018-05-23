@@ -28,6 +28,8 @@ class Fish
         int velocidad;
         int reserva;
         int hambre;
+        int resistencia;
+        int metabolismo;
         int getNumber(std::vector <bool> dna);
         bool marry;
 

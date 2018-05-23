@@ -39,19 +39,19 @@ Fish::Fish(float x, float y, float speedx,float speedy, std::vector <bool> dna)
     transformacion = Fish::getNumber(aux);
 
     aux.clear();
-    for (int x=58;x<63;++x){
+    for (int x=58;x<64;++x){
         aux.push_back(dna[x]);
     }
     vida= Fish::getNumber(aux);
 
     aux.clear();
-    for (int x=64;x<69;++x){
+    for (int x=64;x<70;++x){
         aux.push_back(dna[x]);
     }
     vision= 70 + Fish::getNumber(aux);
 
     aux.clear();
-    for (int x=70;x<77;++x){
+    for (int x=70;x<78;++x){
         aux.push_back(dna[x]);
     }
     celo= 500 + Fish::getNumber(aux);
@@ -61,6 +61,19 @@ Fish::Fish(float x, float y, float speedx,float speedy, std::vector <bool> dna)
         aux.push_back(dna[x]);
     }
     velocidad= Fish::getNumber(aux);
+
+    aux.clear();
+    for (int x=80;x<87;++x){
+        aux.push_back(dna[x]);
+    }
+    resistencia= 300 + Fish::getNumber(aux);
+
+    aux.clear();
+    for (int x=87;x<89;++x){
+        aux.push_back(dna[x]);
+    }
+
+    metabolismo=1+Fish::getNumber(aux);
 }
 
 Fish::~Fish()
@@ -76,13 +89,13 @@ void Fish::Draw(ALLEGRO_DISPLAY *display, int comida[1500][780])
         reserva+=comida[int(position.first)][int(position.second)];
         comida[int(position.first)][int(position.second)]=0;
     }
-    if (reserva==0){
+    if (reserva<=0){
         hambre++;
-    }else{
-        comida--;
-        hambre-=1;
+    }else if(hambre>0){
+        reserva--;
+        hambre-=metabolismo*4;
     }
-    if (hambre==100){
+    if (hambre>resistencia){
         vida=0;
     }
     //std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
@@ -119,12 +132,10 @@ void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780], std::vector<
         food.second-=position.second;
         food.first*=0.1;
         food.second*=0.1;
-/*
-        if (hambre>=10){
-            food.first*=hambre/10;
-            food.second*=hambre/10;
-        }
-*/
+
+        //food.first*=(hambre/10);
+        //food.second*=(hambre/10);
+
         speed.first += (food.first);
         speed.second+= (food.second);
     }
