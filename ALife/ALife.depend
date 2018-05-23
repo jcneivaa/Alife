@@ -231,7 +231,7 @@
 1372646332 c:\users\lumi\documents\allegro\include\allegro5\allegro_native_dialog.h
 	"allegro5/allegro.h"
 
-1525411125 source:c:\users\lumi\documents\alife\alife\main.cpp
+1527052104 source:c:\users\lumi\documents\alife\alife\main.cpp
 	<allegro5/allegro.h>
 	<allegro5/allegro_native_dialog.h>
 	<allegro5/allegro_primitives.h>
@@ -250,10 +250,10 @@
 
 1362345500 c:\users\lumi\documents\allegro\include\allegro5\allegro_image.h
 
-1525408612 source:c:\users\lumi\documents\alife\alife\src\fish.cpp
+1527052491 source:c:\users\lumi\documents\alife\alife\src\fish.cpp
 	"Fish.h"
 
-1525408189 c:\users\lumi\documents\alife\alife\include\fish.h
+1527050935 c:\users\lumi\documents\alife\alife\include\fish.h
 	<iostream>
 	<allegro5/allegro.h>
 	<allegro5/allegro_image.h>
@@ -277,7 +277,7 @@
 	<allegro5/keyboard.h>
 	<vector>
 
-1525409225 c:\users\lumi\documents\alife\alife\include\predator.h
+1527044801 c:\users\lumi\documents\alife\alife\include\predator.h
 	<iostream>
 	<allegro5/allegro.h>
 	<allegro5/allegro_image.h>

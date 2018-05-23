@@ -21,7 +21,10 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100, predators =2, sourceFood =2, foodRate=200;
+int boids=100, predators =0, sourceFood =2, foodRate=200, season =1000;
+int dnaSize =80;
+//0-23 Color 1, 24-47 Color 2, 48-55 Turing Morph Rule, 56-57 Transformacion, 58-63 Vida Maxima, 64-69 Vision, 70-77 Libido
+//78-79 Velocidad
 //Fish boid;
 vector<Fish> flock;
 vector<Predator> dragons;
@@ -98,6 +101,7 @@ void draw_tree(tree arbolito, float xinit, float yinit){
     }
 }
 
+
 int getVecindario(bool x, bool y, bool z){
     if (x){
         if (y){
@@ -126,14 +130,97 @@ int getVecindario(bool x, bool y, bool z){
 
 void sandPile(int x, int y){
     comida[x][y]++;
+    comida[x+2][y]++;
+    comida[x+4][y]++;
+    comida[x+6][y]++;
+    comida[x+8][y]++;
+    comida[x-2][y]++;
+    comida[x-4][y]++;
+    comida[x-6][y]++;
+    comida[x-8][y]++;
+    comida[x][y+2]++;
+    comida[x][y+4]++;
+    comida[x][y+6]++;
+    comida[x][y+8]++;
+    comida[x][y-2]++;
+    comida[x][y-4]++;
+    comida[x][y-6]++;
+    comida[x][y-8]++;
     if (comida[x][y]>=4){
         comida[x][y]-=4;
+        comida[x+2][y]-=4;
+        comida[x+4][y]-=4;
+        comida[x+6][y]-=4;
+        comida[x+8][y]-=4;
+        comida[x-2][y]-=4;
+        comida[x-4][y]-=4;
+        comida[x-6][y]-=4;
+        comida[x-8][y]-=4;
+        comida[x][y+2]-=4;
+        comida[x][y+4]-=4;
+        comida[x][y+6]-=4;
+        comida[x][y+8]-=4;
+        comida[x][y-2]-=4;
+        comida[x][y-4]-=4;
+        comida[x][y-6]-=4;
+        comida[x][y-8]-=4;
         sandPile((x+SWidth+10)%SWidth,y);
         sandPile((x+SWidth-10)%SWidth,y);
         sandPile((x)%SWidth,(y+SHeight+10)%SHeight);
         sandPile((x)%SWidth,(y+SHeight-10)%SHeight);
     }
 
+}
+
+void createArboles(){
+    arboles.clear();
+    for (int x=0; x<sourceFood*2;++x){
+        //int aux=rand()%SWidth, aux2=rand()%s
+        pair <int,int> aux;
+        aux.first=rand()%SWidth/2;
+        aux.second=rand()%SHeight;
+        if (x>=sourceFood){
+            aux.first+=SWidth/2;
+        }
+        arboles.push_back(aux);
+    }
+}
+
+void createFood(bool winter){
+
+    for (int x=0; x<SWidth; ++x){
+        for (int y = 0; y< SHeight; ++y){
+            comida[x][y]= 0;
+        }
+    }
+
+    for (int i=0; i<sourceFood;++i){
+        for (int x=0; x<400; ++x){
+            if (winter){
+                sandPile(arboles[i].first,arboles[i].second);
+            }else{
+                sandPile(arboles[i+sourceFood].first,arboles[i+sourceFood].second);
+            }
+        }
+    }
+}
+
+vector<bool> create_dna(){
+        vector<bool> dna;
+        for (int x=0; x<dnaSize;++x){
+            int aux= rand();
+            if (aux%2 ==0){
+                dna.push_back(false);
+            }else{
+                dna.push_back(true);
+            }
+        }
+        return dna;
+}
+
+ALLEGRO_COLOR getColor (int r, int g, int b){
+    ALLEGRO_COLOR color = al_map_rgb(r,g,b);
+    return color;
 }
 
 ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
@@ -179,7 +266,7 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
     //al_set_target_backbuffer(display);
 }
 
-ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule){
+ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule, ALLEGRO_COLOR azul, ALLEGRO_COLOR morado){
     ALLEGRO_BITMAP* test = al_create_bitmap(al_get_bitmap_width(cute),al_get_bitmap_height(cute));
 
 
@@ -189,8 +276,8 @@ ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule){
     al_set_target_bitmap(test);
 
     ALLEGRO_COLOR aux;
-    ALLEGRO_COLOR azul= al_map_rgb(0,128,175);
-    ALLEGRO_COLOR morado = al_map_rgb(129,84,202);
+    //ALLEGRO_COLOR azul= al_map_rgb(0,128,175);
+    //ALLEGRO_COLOR morado = al_map_rgb(129,84,202);
 
     //Inicio TuringMorph
     vector<bool> state,nextState;
@@ -252,6 +339,17 @@ ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule){
 
 }
 
+void createBoid(ALLEGRO_BITMAP* cute, ALLEGRO_BITMAP* xfish, ALLEGRO_DISPLAY* display,vector<bool> dna, pair<int,int> pos){
+    Fish boid(pos.first,pos.second,(rand()%2)-1,(rand()%2)-1,dna);
+    vector <int> colores = boid.getColor();
+    cute = turingMorph(cute, boid.getRule(),getColor(colores[0],colores[1],colores[2]),getColor(colores[3],colores[4],colores[5]));
+    al_set_target_backbuffer(display);
+
+    xfish=transformation(cute,boid.getTransformacion());
+    al_set_target_backbuffer(display);
+    boid.setImage(xfish);
+    flock.push_back(boid);
+}
 
 int main()
 {
@@ -302,10 +400,8 @@ int main()
     ALLEGRO_BITMAP* xpredator = al_create_bitmap(al_get_bitmap_width(depredador),al_get_bitmap_height(depredador));
     ALLEGRO_BITMAP* testFish = al_create_bitmap(al_get_bitmap_width(bigFish),al_get_bitmap_height(bigFish));
 
-    cute = turingMorph(cute,122);
-    al_set_target_backbuffer(display);
 
-    bigFish = turingMorph(bigFish,122);
+    //bigFish = turingMorph(bigFish,122);
     al_set_target_backbuffer(display);
 
     //Fin Cosas feas
@@ -359,13 +455,11 @@ int main()
 //Inicio de boids
 
     for (int x =0; x<boids;++x){
-        int option=rand()%4;
-        //int vel = rand()%2;
-        //int vel2 = rand()%2;
-        xfish=transformation(cute,option);
-        al_set_target_backbuffer(display);
-        Fish boid(rand()%SWidth - 100,rand()%SHeight - 100,xfish,(rand()%2)-1,(rand()%2)-1);
-        flock.push_back(boid);
+        vector <bool> dna = create_dna();
+        pair <int, int> pos;
+        pos.first = rand()%SWidth - 100;
+        pos.second = rand()%SHeight - 100;
+        createBoid(cute,xfish,display,dna, pos);
         //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
 
@@ -388,25 +482,8 @@ int main()
 //Fin de Predator
 
 //Inicio de comida
-    for (int x=0; x<sourceFood;++x){
-        //int aux=rand()%SWidth, aux2=rand()%s
-        pair <int,int> aux;
-        aux.first=rand()%SWidth;
-        aux.second=rand()%SHeight;
-        arboles.push_back(aux);
-    }
+    createArboles();
 
-    for (int x=0; x<SWidth; ++x){
-        for (int y = 0; y< SHeight; ++y){
-            comida[x][y]= 0;
-        }
-    }
-
-    for (int i=0; i<sourceFood;++i){
-        for (int x=0; x<400; ++x){
-            sandPile(arboles[i].first,arboles[i].second);
-        }
-    }
 //Fin de comida
 
     bool done=false, arbolito=true, theBig=false;;
@@ -414,8 +491,11 @@ int main()
     int option=0;
     int destroyFish =-1;
     int sandCount=0;
+    int seasonTime=0;
+    bool winter = true;
     vector <pair <float,float>> flockPosition, predatorPosition ;
     //std::pair <float,float> posAux;
+    createFood(winter); //Creacion de la comida inicial
     testFish=transformation(bigFish,option);
     al_set_target_backbuffer(display);
     al_start_timer(timer);
@@ -465,6 +545,19 @@ int main()
         }
     }
 */
+//Manejo de estaciones
+    ++seasonTime;
+    if (seasonTime==season){
+        if (winter){
+            winter = false;
+        }else{
+            winter = true;
+        }
+        seasonTime=0;
+        createFood(winter);
+    }
+
+
 //Dibujar Comida
     for (int x=0; x<SWidth;++x){
         for (int y=0; y<SHeight;++y){
@@ -475,17 +568,12 @@ int main()
     }
 
 //Dibujar Arboles
-    for (int x=0; x<sourceFood;++x){
+    for (int x=0; x<sourceFood*2;++x){
         draw_tree(arbolitos[(x%5)],arboles[x].first,arboles[x].second);
-        if (sandCount==foodRate){
-        sandPile(arboles[x].first,arboles[x].second);
-        }
     }
-    if (sandCount==foodRate){
-        sandCount=0;
-    }else{
-        sandCount++;
-    }
+
+
+
 //Dibujar Peces
     if (theBig){
         al_draw_bitmap(testFish,0,0,0);
@@ -514,6 +602,18 @@ int main()
 
     flockPosition.clear();
 
+//Muerte "natural" y nacimiento
+    for (int x=0; x<flock.size();++x){
+        if (flock[x].getMarry()){
+            createBoid(cute,xfish,display,flock[x].getFiglio(),flock[x].getPosition());
+            flock[x].divorce();
+        }
+        if (flock[x].getVida()<=0){
+            flock.erase(flock.begin()+x);
+            x--;
+        }
+    }
+
 /*
     for (int x=0;x<5;++x){
         draw_tree(arbolitos[x],(x+1)*250,SHeight);
@@ -521,7 +621,8 @@ int main()
 */
     //draw_tree(treee,200,SHeight);
     //draw_tree(treec,500,SHeight);
-    cout<<flock.size()<<endl;
+    cout<<flock.size()<<"   "<<seasonTime<<endl;
+
     al_flip_display();
     al_clear_to_color(al_map_rgb(0,0,0));
 
