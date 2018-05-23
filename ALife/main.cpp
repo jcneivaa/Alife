@@ -21,7 +21,7 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100, predators =0, sourceFood =2, foodRate=200, season =1000;
+int boids=100, predators =4, sourceFood =2, foodRate=200, season =1000;
 int dnaSize =89;
 //0-23 Color 1, 24-47 Color 2, 48-55 Turing Morph Rule, 56-57 Transformacion, 58-63 Vida Maxima, 64-69 Vision, 70-77 Libido
 //78-79 Velocidad, 80-86 Resistencia, 87-88 Metabolismo
@@ -351,6 +351,18 @@ void createBoid(ALLEGRO_BITMAP* cute, ALLEGRO_BITMAP* xfish, ALLEGRO_DISPLAY* di
     flock.push_back(boid);
 }
 
+void createPredator(ALLEGRO_BITMAP* cute, ALLEGRO_BITMAP* xfish, ALLEGRO_DISPLAY* display,vector<bool> dna, pair<int,int> pos){
+    Predator boid(pos.first,pos.second,(rand()%2)-1,(rand()%2)-1,dna);
+    vector <int> colores = boid.getColor();
+    cute = turingMorph(cute, boid.getRule(),getColor(colores[0],colores[1],colores[2]),getColor(colores[3],colores[4],colores[5]));
+    al_set_target_backbuffer(display);
+
+    xfish=transformation(cute,boid.getTransformacion());
+    al_set_target_backbuffer(display);
+    boid.setImage(xfish);
+    dragons.push_back(boid);
+}
+
 int main()
 {
     //This command create a screen
@@ -468,13 +480,12 @@ int main()
 
 //Inicio de Predator
     for (int x =0; x<predators;++x){
-        int option=rand()%4;
-        //int vel = rand()%2;
-        //int vel2 = rand()%2;
-        xpredator=transformation(depredador,option);
-        al_set_target_backbuffer(display);
-        Predator dragon(rand()%SWidth - 100,rand()%SHeight - 100,xpredator,(rand()%2)-1,(rand()%2)-1);
-        dragons.push_back(dragon);
+        vector <bool> dna = create_dna();
+        pair <int, int> pos;
+        pos.first = rand()%SWidth - 100;
+        pos.second = rand()%SHeight - 100;
+        createPredator(depredador,xpredator,display,dna, pos);
+
         //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
 

@@ -250,7 +250,7 @@
 
 1362345500 c:\users\lumi\documents\allegro\include\allegro5\allegro_image.h
 
-1527054354 source:c:\users\lumi\documents\alife\alife\src\fish.cpp
+1527054512 source:c:\users\lumi\documents\alife\alife\src\fish.cpp
 	"Fish.h"
 
 1527053835 c:\users\lumi\documents\alife\alife\include\fish.h
@@ -277,7 +277,7 @@
 	<allegro5/keyboard.h>
 	<vector>
 
-1527044801 c:\users\lumi\documents\alife\alife\include\predator.h
+1527056494 c:\users\lumi\documents\alife\alife\include\predator.h
 	<iostream>
 	<allegro5/allegro.h>
 	<allegro5/allegro_image.h>
@@ -285,6 +285,6 @@
 	<vector>
 	"Fish.h"
 
-1525409975 source:c:\users\lumi\documents\alife\alife\src\predator.cpp
+1527056494 source:c:\users\lumi\documents\alife\alife\src\predator.cpp
 	"Predator.h"
 

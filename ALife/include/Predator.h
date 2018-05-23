@@ -15,13 +15,40 @@ class Predator
         int vision;
         void Move();
         void SpeedLimit();
+        std::vector <bool> dna;
+        std::vector <bool> figlio;
+        std::vector <int> color;
+        int transformacion;
+        int rule;
+        int vida;
+        int edad;
+        int libido;
+        int celo;
+        int velocidad;
+        int reserva;
+        int hambre;
+        int resistencia;
+        int metabolismo;
+        int getNumber(std::vector <bool> dna);
+        bool marry;
+
 
     public:
-        Predator(float x, float y,ALLEGRO_BITMAP* image, float speedx,float speedy);
+        Predator(float x, float y, float speedx,float speedy, std::vector <bool> dna);
         ~Predator();
 
         void Draw(ALLEGRO_DISPLAY* display);
         void Behavior(std::vector <std::pair<float,float>> flock);
         int Eat(std::vector <std::pair<float,float>> flock);
         std::pair <float,float> getPosition();
+        std::vector <int> getColor();
+        int getTransformacion();
+        int getRule();
+        int getVida();
+        bool getMarry();
+        void divorce();
+        void setImage(ALLEGRO_BITMAP* image);
+        std::vector <bool> getDNA();
+        std::vector <bool> getFiglio();
+        std::vector <bool> reproducir(std::vector<bool> adn);
 };

@@ -1,13 +1,79 @@
 #include "Predator.h"
 
-Predator::Predator(float x, float y,ALLEGRO_BITMAP* image, float speedx,float speedy)
+Predator::Predator(float x, float y, float speedx,float speedy,std::vector <bool> dna)
 {
-    this->position.first = x;
-    this->position.second = y;
-    this->image = image;
-    this->speed.first=speedx;
-    this->speed.second=speedy;
-    this->vision = 85;
+   this->position.first = x;
+   this->position.second = y;
+   this->speed.first=speedx;
+   this->speed.second=speedy;
+   this->dna = dna;
+   this->edad =0;
+   this->libido=0;
+   this->reserva=0;
+   this->hambre=0;
+   this->marry=false;
+
+
+    for (int x=0; x<6;++x){
+        std::vector <bool> aux;
+        for (int y=0; y<8;++y){
+            aux.push_back(dna[y+x]);
+            //cout<<aux[y]<<endl;
+        }
+            //cout<<getNumber(aux)<<endl;
+        color.push_back(Predator::getNumber(aux));
+    }
+
+    std::vector <bool> aux;
+
+    for (int x=48;x<56;++x){
+        aux.push_back(dna[x]);
+    }
+
+    rule = Predator::getNumber(aux);
+
+    aux.clear();
+    aux.push_back(dna[56]);
+    aux.push_back(dna[57]);
+    transformacion = Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=58;x<64;++x){
+        aux.push_back(dna[x]);
+    }
+    vida= Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=64;x<70;++x){
+        aux.push_back(dna[x]);
+    }
+    vision= 70 + Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=70;x<78;++x){
+        aux.push_back(dna[x]);
+    }
+    celo= 500 + Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=78;x<80;++x){
+        aux.push_back(dna[x]);
+    }
+    velocidad= Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=80;x<87;++x){
+        aux.push_back(dna[x]);
+    }
+    resistencia= 300 + Predator::getNumber(aux);
+
+    aux.clear();
+    for (int x=87;x<89;++x){
+        aux.push_back(dna[x]);
+    }
+
+    metabolismo=1+Predator::getNumber(aux);
+
 }
 
 Predator::~Predator()
@@ -20,6 +86,15 @@ void Predator::Draw(ALLEGRO_DISPLAY* display)
 {
     Predator::Move();
     al_draw_bitmap(image,position.first,position.second,0);
+    if (reserva<=0){
+        hambre++;
+    }else if(hambre>0){
+        reserva--;
+        hambre-=metabolismo*4;
+    }
+    if (hambre>resistencia){
+        vida=0;
+    }
 
 }
 void Predator::Behavior(std::vector <std::pair<float,float>> flock)
@@ -65,6 +140,12 @@ void Predator::Move()
     Predator::SpeedLimit();
     position.first = int((position.first + speed.first + 1500))%1500;
     position.second = int((position.second + speed.second + 780))%780;
+    edad++;
+    libido++;
+    if (edad== 100){
+        edad=0;
+        vida--;
+    }
 }
 
 void Predator::SpeedLimit()
@@ -76,14 +157,14 @@ void Predator::SpeedLimit()
     speed.first*=4;
     speed.second*=4;
     if (speed.first <0){
-        speed.first-=1;
+        speed.first-=velocidad;
     }else{
-        speed.first+=1;
+        speed.first+=velocidad;
     }
     if (speed.second<0){
-        speed.second-=1;
+        speed.second-=velocidad;
     }else{
-        speed.second+=1;
+        speed.second+=velocidad;
     }
 
     if (std::isnan(speed.first)){
@@ -116,4 +197,88 @@ int Predator::Eat(std::vector <std::pair<float,float>> flock)
 std::pair<float,float> Predator::getPosition()
 {
     return position;
+}
+
+
+std::vector<int> Predator::getColor()
+{
+    return color;
+}
+
+int Predator::getTransformacion(){
+    return transformacion;
+}
+
+int Predator::getRule(){
+    return rule;
+}
+
+int Predator::getVida(){
+    return vida;
+}
+
+void Predator::setImage(ALLEGRO_BITMAP* image){
+    this->image = image;
+}
+
+void Predator::divorce(){
+    figlio.clear();
+    marry=false;
+}
+
+
+bool Predator::getMarry(){
+    return marry;
+}
+
+std::vector<bool> Predator::getFiglio(){
+    return figlio;
+}
+
+std::vector<bool> Predator::getDNA(){
+    return dna;
+}
+
+int Predator::getNumber(std::vector <bool> adn){
+    int aux = 1, number=0;
+    for (int x= adn.size()-1; x>0; --x){
+        if (adn[x]){
+            number+=aux;
+        }
+        aux*=2;
+    }
+    return number;
+}
+
+std::vector<bool> Predator::reproducir(std::vector<bool> adn){
+    int corte = rand()% dna.size();
+    int first = rand()%2;
+    std::vector<bool> hijo;
+    if (first==0){
+        for (int x=0;x<corte;++x){
+            hijo.push_back(adn[x]);
+        }
+        for (int x=corte; x<dna.size();++x){
+            hijo.push_back(dna[x]);
+        }
+    }else{
+        for (int x=0;x<corte;++x){
+            hijo.push_back(dna[x]);
+        }
+        for (int x=corte; x<dna.size();++x){
+            hijo.push_back(adn[x]);
+        }
+    }
+    for (int x=0; x<dna.size();++x){
+        int aux = rand()%dna.size();
+        if (aux<4){
+            if (hijo[x]){
+                hijo[x]=false;
+            }else{
+                hijo[x]=true;
+            }
+        }
+    }
+    libido=0;
+    return hijo;
 }
