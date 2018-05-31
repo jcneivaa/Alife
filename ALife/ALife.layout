@@ -2,40 +2,29 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="480" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="30" />
-			<Collapse line="35" />
-			<Collapse line="42" />
-			<Collapse line="48" />
-			<Collapse line="69" />
-			<Collapse line="100" />
-			<Collapse line="126" />
-			<Collapse line="165" />
-			<Collapse line="208" />
-		</Folding>
-	</File>
 	<File name="src\Fish.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3379" topLine="167" />
-		</Cursor>
-	</File>
-	<File name="include\Fish.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="688" topLine="2" />
-		</Cursor>
-	</File>
-	<File name="include\Predator.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="648" topLine="0" />
+			<Cursor1 position="5775" topLine="347" />
 		</Cursor>
 	</File>
 	<File name="src\Predator.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2407" topLine="0" />
+			<Cursor1 position="524" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Fish.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="597" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="include\Predator.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1288" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="18332" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

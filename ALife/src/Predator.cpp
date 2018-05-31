@@ -19,9 +19,7 @@ Predator::Predator(float x, float y, float speedx,float speedy,std::vector <bool
         std::vector <bool> aux;
         for (int y=0; y<8;++y){
             aux.push_back(dna[y+x]);
-            //cout<<aux[y]<<endl;
         }
-            //cout<<getNumber(aux)<<endl;
         color.push_back(Predator::getNumber(aux));
     }
 
@@ -231,6 +229,10 @@ int Predator::getTransformacion(){
 
 int Predator::getRule(){
     return rule;
+}
+
+int Predator::getVision(){
+    return vision;
 }
 
 int Predator::getVida(){

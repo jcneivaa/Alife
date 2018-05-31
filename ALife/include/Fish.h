@@ -45,6 +45,7 @@ class Fish
         int getTransformacion();
         int getRule();
         int getVida();
+        int getVision();
         bool getMarry();
         void divorce();
         void setImage(ALLEGRO_BITMAP* image);

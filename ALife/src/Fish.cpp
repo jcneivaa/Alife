@@ -19,9 +19,7 @@ Fish::Fish(float x, float y, float speedx,float speedy, std::vector <bool> dna)
         std::vector <bool> aux;
         for (int y=0; y<8;++y){
             aux.push_back(dna[y+x]);
-            //cout<<aux[y]<<endl;
         }
-            //cout<<getNumber(aux)<<endl;
         color.push_back(Fish::getNumber(aux));
     }
 
@@ -54,7 +52,7 @@ Fish::Fish(float x, float y, float speedx,float speedy, std::vector <bool> dna)
     for (int x=70;x<78;++x){
         aux.push_back(dna[x]);
     }
-    celo= 500 + Fish::getNumber(aux);
+    celo= 300 + Fish::getNumber(aux);
 
     aux.clear();
     for (int x=78;x<80;++x){
@@ -98,7 +96,6 @@ void Fish::Draw(ALLEGRO_DISPLAY *display, int comida[1500][780])
     if (hambre>resistencia){
         vida=0;
     }
-    //std::cout<<position.first<<"  "<<position.second<<speed.first<<"   "<<speed.second<<std::endl;
 }
 
 void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780], std::vector<std::pair <float,float>> predators)
@@ -132,9 +129,6 @@ void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780], std::vector<
         food.second-=position.second;
         food.first*=0.1;
         food.second*=0.1;
-
-        //food.first*=(hambre/10);
-        //food.second*=(hambre/10);
 
         speed.first += (food.first);
         speed.second+= (food.second);
@@ -226,8 +220,6 @@ void Fish::Behavior(std::vector<Fish> flock, int comida[1500][780], std::vector<
         cohesion.first*=0.1;
         cohesion.second*=0.1;
 
-        //acceleration.first += alignment.first + cohesion.first *3 + separation.first;
-        //acceleration.second += alignment.second + cohesion.second*3 + separation.second;
         speed.first += alignment.first + cohesion.first *3 + separation.first;
         speed.second += alignment.second + cohesion.second*3 + separation.second;
     }
@@ -306,6 +298,10 @@ int Fish::getTransformacion(){
 
 int Fish::getRule(){
     return rule;
+}
+
+int Fish::getVision(){
+    return vision;
 }
 
 int Fish::getVida(){

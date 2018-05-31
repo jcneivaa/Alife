@@ -21,7 +21,7 @@ using namespace std;
 #define FPS 20
 
 int comida[SWidth][SHeight];
-int boids=100, predators =4, sourceFood =2, foodRate=200, season =800;
+int boids=100, predators =7, sourceFood =2, foodRate=200, season =600;
 int dnaSize =89;
 //0-23 Color 1, 24-47 Color 2, 48-55 Turing Morph Rule, 56-57 Transformacion, 58-63 Vida Maxima, 64-69 Vision, 70-77 Libido
 //78-79 Velocidad, 80-86 Resistencia, 87-88 Metabolismo
@@ -130,40 +130,40 @@ int getVecindario(bool x, bool y, bool z){
 
 void sandPile(int x, int y){
     comida[x][y]++;
-    comida[x+2][y]++;
-    comida[x+4][y]++;
-    comida[x+6][y]++;
-    comida[x+8][y]++;
-    comida[x-2][y]++;
-    comida[x-4][y]++;
-    comida[x-6][y]++;
-    comida[x-8][y]++;
-    comida[x][y+2]++;
-    comida[x][y+4]++;
-    comida[x][y+6]++;
-    comida[x][y+8]++;
-    comida[x][y-2]++;
-    comida[x][y-4]++;
-    comida[x][y-6]++;
-    comida[x][y-8]++;
+    comida[(x+SWidth+2)%SWidth][y]++;
+    comida[(x+SWidth+4)%SWidth][y]++;
+    comida[(x+SWidth+6)%SWidth][y]++;
+    comida[(x+SWidth+8)%SWidth][y]++;
+    comida[(x+SWidth-2)%SWidth][y]++;
+    comida[(x+SWidth-4)%SWidth][y]++;
+    comida[(x+SWidth-6)%SWidth][y]++;
+    comida[(x+SWidth-8)%SWidth][y]++;
+    comida[x][(y+SHeight+2)%SHeight]++;
+    comida[x][(y+SHeight+4)%SHeight]++;
+    comida[x][(y+SHeight+6)%SHeight]++;
+    comida[x][(y+SHeight+8)%SHeight]++;
+    comida[x][(y+SHeight-2)%SHeight]++;
+    comida[x][(y+SHeight-4)%SHeight]++;
+    comida[x][(y+SHeight-6)%SHeight]++;
+    comida[x][(y+SHeight-8)%SHeight]++;
     if (comida[x][y]>=4){
         comida[x][y]-=4;
-        comida[x+2][y]-=4;
-        comida[x+4][y]-=4;
-        comida[x+6][y]-=4;
-        comida[x+8][y]-=4;
-        comida[x-2][y]-=4;
-        comida[x-4][y]-=4;
-        comida[x-6][y]-=4;
-        comida[x-8][y]-=4;
-        comida[x][y+2]-=4;
-        comida[x][y+4]-=4;
-        comida[x][y+6]-=4;
-        comida[x][y+8]-=4;
-        comida[x][y-2]-=4;
-        comida[x][y-4]-=4;
-        comida[x][y-6]-=4;
-        comida[x][y-8]-=4;
+        comida[(x+SWidth+2)%SWidth][y]-=4;
+        comida[(x+SWidth+4)%SWidth][y]-=4;
+        comida[(x+SWidth+6)%SWidth][y]-=4;
+        comida[(x+SWidth+8)%SWidth][y]-=4;
+        comida[(x+SWidth-2)%SWidth][y]-=4;
+        comida[(x+SWidth-4)%SWidth][y]-=4;
+        comida[(x+SWidth-6)%SWidth][y]-=4;
+        comida[(x+SWidth-8)%SWidth][y]-=4;
+        comida[x][(y+SHeight+2)%SHeight]-=4;
+        comida[x][(y+SHeight+4)%SHeight]-=4;
+        comida[x][(y+SHeight+6)%SHeight]-=4;
+        comida[x][(y+SHeight+8)%SHeight]-=4;
+        comida[x][(y+SHeight-2)%SHeight]-=4;
+        comida[x][(y+SHeight-4)%SHeight]-=4;
+        comida[x][(y+SHeight-6)%SHeight]-=4;
+        comida[x][(y+SHeight-8)%SHeight]-=4;
         sandPile((x+SWidth+10)%SWidth,y);
         sandPile((x+SWidth-10)%SWidth,y);
         sandPile((x)%SWidth,(y+SHeight+10)%SHeight);
@@ -175,7 +175,6 @@ void sandPile(int x, int y){
 void createArboles(){
     arboles.clear();
     for (int x=0; x<sourceFood*2;++x){
-        //int aux=rand()%SWidth, aux2=rand()%s
         pair <int,int> aux;
         aux.first=rand()%SWidth/4;
         aux.second=rand()%SHeight;
@@ -234,12 +233,10 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
     al_set_target_bitmap(test);
 
     ALLEGRO_COLOR aux;
-    //cout<<option;
 
     for(int x=0;x<al_get_bitmap_width(cute);++x){
         for (int y=0;y<al_get_bitmap_height(cute);++y){
             aux=al_get_pixel(cute,x,y);
-            //cout<<aux.a<<endl;
 
             if (option==0){
                 al_put_pixel(x,y,aux);
@@ -261,8 +258,7 @@ ALLEGRO_BITMAP* transformation(ALLEGRO_BITMAP* cute, int option){
 
     return test;
 
-    //al_save_bitmap("shalalala.png",test);
-
+    //al_save_bitmap("shalalala.png",test); //En caso de querer guardar la imagen resultante descomentar estas lineas
     //al_set_target_backbuffer(display);
 }
 
@@ -276,8 +272,6 @@ ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule, ALLEGRO_COLO
     al_set_target_bitmap(test);
 
     ALLEGRO_COLOR aux;
-    //ALLEGRO_COLOR azul= al_map_rgb(0,128,175);
-    //ALLEGRO_COLOR morado = al_map_rgb(129,84,202);
 
     //Inicio TuringMorph
     vector<bool> state,nextState;
@@ -328,8 +322,6 @@ ALLEGRO_BITMAP* turingMorph(ALLEGRO_BITMAP* cute, int morphingRule, ALLEGRO_COLO
     }
 
     //Fin TuringMorph
-
-
 
 
     al_unlock_bitmap(test);
@@ -420,6 +412,7 @@ int main()
 
     ALLEGRO_COLOR eblue = al_map_rgb(44,117,255);
     ALLEGRO_COLOR white = al_map_rgb(255,255,255);
+    ALLEGRO_COLOR morado = al_map_rgb(129,84,202);
 
     //  Inicio L-Systems
 
@@ -453,16 +446,8 @@ int main()
     tree treec = {6,22.5,eblue,create_tree(1,ctree,"F",4)};
     tree treed = {1,20,eblue,create_tree(2,dtree,"X",7)};
     tree treee = {1,25.7,eblue,create_tree(2,etree,"X",7)};
-    //tree treef = {1,22.5,eblue,create_tree(2,ftree,"X",5)};
 
     tree arbolitos [5] = {treea,treeb,treec,treed,treee};
-
-    //draw_tree(tree1);
-    //draw_tree(treec);
-    //draw_tree(treed);
-
-//    al_draw_bitmap(cute,0,0,ALLEGRO_FLIP_HORIZONTAL);
-//    al_draw_bitmap(test,0,0,0);
 
 //Inicio de boids
 
@@ -472,7 +457,6 @@ int main()
         pos.first = rand()%SWidth - 100;
         pos.second = rand()%SHeight - 100;
         createBoid(cute,xfish,display,dna, pos);
-        //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
 
 
@@ -486,7 +470,6 @@ int main()
         pos.second = rand()%SHeight - 100;
         createPredator(depredador,xpredator,display,dna, pos);
 
-        //flock.push_back(new Fish::Fish(rand()%100,rand()%100));
     }
 
 
@@ -503,9 +486,9 @@ int main()
     int destroyFish =-1;
     int sandCount=0;
     int seasonTime=0;
+    int vision, visionCount, pvision, pvisionCount;
     bool winter = true;
     vector <pair <float,float>> flockPosition, predatorPosition ;
-    //std::pair <float,float> posAux;
     createFood(winter); //Creacion de la comida inicial
     testFish=transformation(bigFish,option);
     al_set_target_backbuffer(display);
@@ -573,7 +556,11 @@ int main()
     for (int x=0; x<SWidth;++x){
         for (int y=0; y<SHeight;++y){
             if (comida[x][y]>0){
-                al_draw_pixel(x,y,white);
+                if (winter){
+                    al_draw_pixel(x,y,white);
+                }else{
+                    al_draw_pixel(x,y,morado);
+                }
             }
         }
     }
@@ -589,21 +576,25 @@ int main()
     if (theBig){
         al_draw_bitmap(testFish,0,0,0);
     }
-
+    vision=0;
+    visionCount=0;
     for (int x=0;x<flock.size();++x){
         flock[x].Behavior(flock, comida, predatorPosition);
         flock[x].Draw(display, comida);
         flockPosition.push_back(flock[x].getPosition());
-        //if (comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]>0){
-        //    comida[int(flock[x].getPosition().first)][int(flock[x].getPosition().second)]--;
-        //}
+        vision+=flock[x].getVision();
+        visionCount++;
     }
 
     predatorPosition.clear();
+    pvision=0;
+    pvisionCount=0;
 //Dibujar Presas
     for (int x=0;x<dragons.size();++x){
         dragons[x].Draw(display);
         dragons[x].Behavior(flockPosition);
+        pvision+=dragons[x].getVision();
+        pvisionCount++;
         destroyFish = dragons[x].Eat(flockPosition);
         predatorPosition.push_back(dragons[x].getPosition());
         if (destroyFish>=0){
@@ -636,13 +627,6 @@ int main()
         }
     }
 
-/*
-    for (int x=0;x<5;++x){
-        draw_tree(arbolitos[x],(x+1)*250,SHeight);
-    }
-*/
-    //draw_tree(treee,200,SHeight);
-    //draw_tree(treec,500,SHeight);
     cout<<flock.size()<<"   "<<dragons.size()<<"    "<<seasonTime<<endl;
 
     al_flip_display();
